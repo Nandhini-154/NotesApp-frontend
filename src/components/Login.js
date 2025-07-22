@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -11,7 +12,8 @@ const Login = () => {
     if (!form.email || !form.password) return alert("All fields are required");
 
     try {
-      const res = await axios.post("http://localhost:5000/login", form);
+     const res = await axios.post(`${BASE_URL}/login`, form);
+
       localStorage.setItem("token", res.data.token);
       alert("Login successful!");
       navigate("/dashboard");

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const BASE_URL = process.env.REACT_APP_API_URL;
 
 const Dashboard = () => {
   const [tasks, setTasks] = useState([]);
@@ -26,9 +27,9 @@ const Dashboard = () => {
 
   const loadTasks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/tasks", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+     const res = await axios.get(`${BASE_URL}/tasks`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
       setTasks(res.data);
     } catch (err) {
       alert("Session expired. Please login again.");
@@ -47,9 +48,9 @@ const Dashboard = () => {
     if (!newTask.title || !newTask.deadline) return alert("All fields required");
     if (isPastDate(newTask.deadline)) return alert("Deadline cannot be in the past");
 
-    await axios.post("http://localhost:5000/tasks", newTask, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.post(`${BASE_URL}/tasks`, newTask, {
+  headers: { Authorization: `Bearer ${token}` },
+});
     alert("Task added");
     setNewTask({ title: "", deadline: "" });
     loadTasks();
@@ -70,9 +71,9 @@ const Dashboard = () => {
     if (isPastDate(editForm.deadline)) return alert("Deadline cannot be in the past");
 
     try {
-      await axios.put(`http://localhost:5000/tasks/${id}`, editForm, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+     await axios.put(`${BASE_URL}/tasks/${id}`, editForm, {
+  headers: { Authorization: `Bearer ${token}` },
+});
       alert("Task updated");
       setEditTaskId(null);
       loadTasks();
@@ -82,18 +83,17 @@ const Dashboard = () => {
   };
 
   const deleteTask = async (id) => {
-    await axios.delete(`http://localhost:5000/tasks/${id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    await axios.delete(`${BASE_URL}/tasks/${id}`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
     loadTasks();
   };
-
-  const markCompleted = async (id) => {
-    await axios.put(`http://localhost:5000/tasks/${id}`, { completed: true }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    loadTasks();
-  };
+const markCompleted = async (id) => {
+  await axios.put(`${BASE_URL}/tasks/${id}`, { completed: true }, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  loadTasks();
+};
 
   return (
     <div className="container">

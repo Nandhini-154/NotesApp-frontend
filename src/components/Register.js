@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom"; 
-
+const BASE_URL = process.env.REACT_APP_API_URL;
 const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
   const navigate = useNavigate();
@@ -20,7 +20,9 @@ const Register = () => {
     if (error) return alert(error);
 
     try {
-      await axios.post("http://localhost:5000/register", form);
+   
+      await axios.post(`${BASE_URL}/register`, form);
+
       alert("Registration successful!");
       navigate("/login");
     } catch (err) {
