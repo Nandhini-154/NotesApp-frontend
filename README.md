@@ -1,6 +1,7 @@
 # Notes App - Frontend
 
-React-based frontend for Notes App with user registration, login, and dashboard.
+MERN Notes App with user registration, login, and dashboard.
+**This repository contains the frontend files.**
 
 ## 🔗 Live URLs
 - Frontend hosted at netlify: https://splendorous-smakager-a80550.netlify.app/
