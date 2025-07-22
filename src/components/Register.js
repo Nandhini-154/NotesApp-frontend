@@ -21,7 +21,7 @@ const Register = () => {
 
     try {
    
-      await axios.post(`${BASE_URL}/register`, form);
+      await axios.post(`${BASE_URL}/`, form);
 
       alert("Registration successful!");
       navigate("/login");
