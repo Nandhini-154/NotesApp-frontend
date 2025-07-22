@@ -18,7 +18,7 @@ const Dashboard = () => {
     } else {
       loadTasks();
     }
-  }, []);
+  }, [loadTasks, navigate, token]);
 
   const logout = () => {
     localStorage.removeItem("token");
