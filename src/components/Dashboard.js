@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const Dashboard = () => {
@@ -12,30 +13,30 @@ const Dashboard = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!token) {
-      navigate("/login");
-    } else {
-      loadTasks();
-    }
-  }, [loadTasks, navigate, token]);
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
-  const loadTasks = async () => {
+  const loadTasks = useCallback(async () => {
     try {
-     const res = await axios.get(`${BASE_URL}/tasks`, {
-  headers: { Authorization: `Bearer ${token}` },
-});
+      const res = await axios.get(`${BASE_URL}/tasks`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setTasks(res.data);
     } catch (err) {
       alert("Session expired. Please login again.");
       localStorage.removeItem("token");
       navigate("/login");
     }
+  }, [token, navigate]);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    } else {
+      loadTasks();
+    }
+  }, [token, navigate, loadTasks]);
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
   };
 
   const isPastDate = (date) => {
@@ -49,8 +50,8 @@ const Dashboard = () => {
     if (isPastDate(newTask.deadline)) return alert("Deadline cannot be in the past");
 
     await axios.post(`${BASE_URL}/tasks`, newTask, {
-  headers: { Authorization: `Bearer ${token}` },
-});
+      headers: { Authorization: `Bearer ${token}` },
+    });
     alert("Task added");
     setNewTask({ title: "", deadline: "" });
     loadTasks();
@@ -71,9 +72,9 @@ const Dashboard = () => {
     if (isPastDate(editForm.deadline)) return alert("Deadline cannot be in the past");
 
     try {
-     await axios.put(`${BASE_URL}/tasks/${id}`, editForm, {
-  headers: { Authorization: `Bearer ${token}` },
-});
+      await axios.put(`${BASE_URL}/tasks/${id}`, editForm, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       alert("Task updated");
       setEditTaskId(null);
       loadTasks();
@@ -84,16 +85,17 @@ const Dashboard = () => {
 
   const deleteTask = async (id) => {
     await axios.delete(`${BASE_URL}/tasks/${id}`, {
-  headers: { Authorization: `Bearer ${token}` },
-});
+      headers: { Authorization: `Bearer ${token}` },
+    });
     loadTasks();
   };
-const markCompleted = async (id) => {
-  await axios.put(`${BASE_URL}/tasks/${id}`, { completed: true }, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  loadTasks();
-};
+
+  const markCompleted = async (id) => {
+    await axios.put(`${BASE_URL}/tasks/${id}`, { completed: true }, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    loadTasks();
+  };
 
   return (
     <div className="container">
@@ -142,7 +144,6 @@ const markCompleted = async (id) => {
                   <button disabled>
                     {task.completed ? "Completed" : "Pending"}
                   </button>
-
                   {!task.completed && (
                     <button onClick={() => markCompleted(task._id)}>Mark as Completed</button>
                   )}
