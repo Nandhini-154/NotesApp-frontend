@@ -143,7 +143,7 @@ const Dashboard = () => {
                 </div>
                 <div style={{ marginTop: "8px" }}>
                   <button onClick={() => toggleCompleted(task)}>
-  {task.completed ? "Mark as Pending" : "Mark as Completed"}
+  {task.completed ? "Completed" : "Mark as Completed"}
 </button>
 
                   <button onClick={() => startEdit(task)}>Edit</button>
