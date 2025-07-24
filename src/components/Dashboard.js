@@ -90,12 +90,13 @@ const Dashboard = () => {
     loadTasks();
   };
 
-  const markCompleted = async (id) => {
-    await axios.put(`${BASE_URL}/tasks/${id}`, { completed: true }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    loadTasks();
-  };
+ const toggleCompleted = async (task) => {
+  await axios.put(`${BASE_URL}/tasks/${task._id}`, { completed: !task.completed }, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  loadTasks();
+};
+
 
   return (
     <div className="container">
@@ -141,12 +142,10 @@ const Dashboard = () => {
                   <strong>{task.title}</strong> - {task.deadline}
                 </div>
                 <div style={{ marginTop: "8px" }}>
-                  <button disabled>
-                    {task.completed ? "Completed" : "Pending"}
-                  </button>
-                  {!task.completed && (
-                    <button onClick={() => markCompleted(task._id)}>Mark as Completed</button>
-                  )}
+                  <button onClick={() => toggleCompleted(task)}>
+  {task.completed ? "Mark as Pending" : "Mark as Completed"}
+</button>
+
                   <button onClick={() => startEdit(task)}>Edit</button>
                   <button onClick={() => deleteTask(task._id)}>Delete</button>
                 </div>
